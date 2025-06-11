@@ -16,8 +16,13 @@ public class UserDaoImpl {
         return entityManager.createQuery("from User", User.class).getResultList();
     }
     public Optional<User> findById(int id) {
-        return Optional.ofNullable(entityManager.find(User.class, id));
+//        return Optional.ofNullable(entityManager.find(User.class, id));
+
+      return Optional.ofNullable(entityManager.createQuery("from User where id = :idfind", User.class)
+                .setParameter("idfind", id)
+                .getSingleResult());
     }
+
     public void save(User user){
         entityManager.merge(user);
     }

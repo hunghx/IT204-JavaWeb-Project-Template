@@ -7,20 +7,8 @@
 <body>
 <p th:text="|Bạn đã truy cập trang này ${count} lần|"></p>
 <h1>Home</h1>
-<form action="/submit" method="post" th:object="${request}">
-    <label >Name:</label>
-    <input type="text" th:field="*{name}"/>
-    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red"></p>
-    <br>
-    <label >Age:</label>
-    <input type="number" th:field="*{age}"/>
-    <p th:if="${#fields.hasErrors('age')}" th:errors="*{age}" style="color: red"></p>
-
-    <br>
-    <label >Date:</label>
-    <input type="date" th:field="*{inputDate}">
-    <p th:if="${#fields.hasErrors('inputDate')}" th:errors="*{inputDate}" style="color: red"></p>
-    <br>
+<form action="/submit" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" id="">
     <button type="submit">Submit</button>
 </form>
 </body>

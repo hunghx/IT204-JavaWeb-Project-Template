@@ -1,4 +1,4 @@
-package ra.web.model;
+package ra.web.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ra.web.dao.UserDaoImpl;
 import ra.web.entity.User;
-import ra.web.model.UserRequest;
+import ra.web.dto.UserRequest;
 
 import javax.transaction.Transactional;
 import java.util.List;
