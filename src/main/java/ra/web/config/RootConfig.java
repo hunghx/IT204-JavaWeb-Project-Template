@@ -1,7 +1,10 @@
 package ra.web.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -16,23 +19,26 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
+@PropertySource("classpath:application.properties") // Nguồn tài nguyên chứa các thuộc tính cấu hình
 public class RootConfig {
+    @Autowired
+    private Environment env;
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource source = new DriverManagerDataSource();
-        source.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        source.setUrl("jdbc:mysql://localhost:3306/orm?createDatabaseIfNotExist=true&useSSL=false");
-        source.setUsername("root");
-        source.setPassword("123456$");
+        source.setDriverClassName(env.getProperty("datasource.driver","com.mysql.cj.jdbc.Driver")); // Driver của MySQL
+        source.setUrl(env.getProperty("datasource.url"));
+        source.setUsername(env.getProperty("datasource.username"));
+        source.setPassword(env.getProperty("datasource.password"));
         return source;
     }
 
     public Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "update"); // tự đong tạo CSDL cũng như các bang (DDL)
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect"); // cung cấp phiên bản và Hệ QTCSDL tương thích
-        properties.setProperty("hibernate.show_sql", "true"); // hiển thị câu SQL mà hibernate thực thi
-        properties.setProperty("hibernate.format_sql", "true"); // format câu SQL mà hibernate thực thi
+        properties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto")); // tự đong tạo CSDL cũng như các bang (DDL)
+        properties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect")); // cung cấp phiên bản và Hệ QTCSDL tương thích
+        properties.setProperty("hibernate.show_sql",env.getProperty("hibernate.show_sql")); // hiển thị câu SQL mà hibernate thực thi
+        properties.setProperty("hibernate.format_sql", env.getProperty("hibernate.format_sql")); // format câu SQL mà hibernate thực thi
         return properties;
     }
 

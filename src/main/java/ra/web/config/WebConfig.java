@@ -1,14 +1,17 @@
 package ra.web.config;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -21,7 +24,10 @@ import javax.servlet.MultipartConfigElement;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "ra.web")
+@PropertySource("classpath:application.properties")
 public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
+    @Autowired
+    private Environment env;
     private ApplicationContext applicationContext;
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -67,8 +73,13 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
     public CommonsMultipartResolver multipartResolver(){
         CommonsMultipartResolver multipartResolver = new
                 CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSizePerFile(5 * 1024 * 1024); // 5MB
+        multipartResolver.setMaxUploadSizePerFile(Long.parseLong(env.getProperty("multipart.max-file-size","5000000"))); // 5MB
         return multipartResolver;
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new AuthInterceptor())
+                .addPathPatterns("/admin/**") ;// Chỉ áp dụng cho các đường dẫn bắt đầu bằng /admin/
+    }
 }
