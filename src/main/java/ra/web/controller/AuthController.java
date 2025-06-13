@@ -26,8 +26,5 @@ public class AuthController {
     public String dashboard() {
         return "dashboard"; // Trả về view dashboard.html nếu đã đăng nhập
     }
-    @RequestMapping(value = "/**")
-    public ModelAndView noHandlerMappingFound() throws NoHandlerFoundException {
-        throw new NoHandlerFoundException("GET", "/**", null);
-    }
+
 }
